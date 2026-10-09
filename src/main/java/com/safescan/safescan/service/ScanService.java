@@ -217,7 +217,7 @@ public class ScanService {
 
             ResponseEntity<Map> response =
                     restTemplate.postForEntity(
-                            "http://127.0.0.1:5000/predict",
+                            "https://safe-scan-ai.onrender.com/predict",
                             entity,
                             Map.class
                     );
