@@ -1,0 +1,272 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | SafeScan AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background:
+                radial-gradient(ellipse at 15% 15%, #10334b 0%, transparent 40%),
+                radial-gradient(ellipse at 85% 85%, #092d40 0%, transparent 38%),
+                #050b16;
+            color: #eaf6ff;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 420px;
+            padding: 36px;
+            background: rgba(12, 25, 43, 0.94);
+            border: 1px solid rgba(34, 211, 238, 0.28);
+            border-radius: 22px;
+            box-shadow: 0 0 45px rgba(0, 190, 255, 0.09);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .logo {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #06b6d4, #2563eb);
+            color: white;
+            font-size: 25px;
+            box-shadow: 0 0 22px rgba(6, 182, 212, 0.22);
+        }
+
+        .brand-name {
+            font-size: 21px;
+            font-weight: 750;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-name span {
+            color: #22d3ee;
+        }
+
+        .tagline {
+            margin: 5px 0 0;
+            color: #8fa8c0;
+            font-size: 12px;
+        }
+
+        .eyebrow {
+            margin-bottom: 10px;
+            color: #22d3ee;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 29px;
+            letter-spacing: -0.7px;
+        }
+
+        .subtitle {
+            margin: 10px 0 22px;
+            color: #9aafc5;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        label {
+            display: block;
+            margin: 17px 0 8px;
+            color: #dce9f7;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 15px;
+            border: 1px solid #263c53;
+            border-radius: 10px;
+            outline: none;
+            background: #081421;
+            color: white;
+            font-size: 14px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input::placeholder {
+            color: #667d94;
+        }
+
+        input:focus {
+            border-color: #22d3ee;
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.10);
+        }
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 15px;
+            border: 0;
+            border-radius: 10px;
+            background: linear-gradient(100deg, #0891b2, #2563eb);
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(8, 145, 178, 0.25);
+        }
+
+        .message {
+            margin: 15px 0;
+            padding: 11px 13px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .error {
+            border: 1px solid #7f303b;
+            background: #351a26;
+            color: #ffadb5;
+        }
+
+        .success {
+            border: 1px solid #17684f;
+            background: #102e29;
+            color: #80f0c2;
+        }
+
+        .login {
+            margin: 23px 0 0;
+            color: #9aafc5;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        a {
+            color: #22d3ee;
+            font-weight: 650;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .security-note {
+            margin-top: 26px;
+            padding-top: 19px;
+            border-top: 1px solid #203247;
+            color: #8299b0;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 27px 23px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="card">
+        <div class="brand">
+            <div class="logo" aria-hidden="true">⌁</div>
+            <div>
+                <div class="brand-name">SafeScan <span>AI</span></div>
+                <p class="tagline">Your digital safety companion</p>
+            </div>
+        </div>
+
+        <div class="eyebrow">Get started</div>
+        <h1>Create your account.</h1>
+
+        <p class="subtitle">
+            Join SafeScan AI to check suspicious links,
+            detect potential scams, and browse more carefully.
+        </p>
+
+        <p class="message error"
+           th:if="${error}"
+           th:text="${error}"></p>
+
+        <p class="message success"
+           th:if="${success}"
+           th:text="${success}"></p>
+
+        <form action="/signup" method="post">
+            <label for="name">Full name</label>
+            <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Enter your full name"
+                autocomplete="name"
+                required
+                maxlength="100">
+
+            <label for="email">Email address</label>
+            <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="you@example.com"
+                autocomplete="email"
+                required
+                maxlength="254">
+
+            <label for="password">Create password</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="At least 8 characters"
+                autocomplete="new-password"
+                minlength="8"
+                required>
+
+            <button type="submit">Create Account &rarr;</button>
+        </form>
+
+        <p class="login">
+            Already have an account?
+            <a href="/login">Sign in</a>
+        </p>
+
+        <div class="security-note">
+            ◆ &nbsp; Stay alert. Stay protected.
+        </div>
+    </main>
+</body>
+</html>

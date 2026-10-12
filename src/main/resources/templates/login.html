@@ -1,0 +1,708 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#040b18">
+    <title>Sign In | SafeScan AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            width: 100%;
+            min-height: 100%;
+        }
+
+        body {
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding: 0;
+            background: #040b18;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #f3f7ff;
+        }
+
+        .auth-card {
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
+            width: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow: hidden;
+            border: none;
+            border-radius: 0;
+            background: #070d22;
+            box-shadow: none;
+        }
+
+        /* LEFT: LOGIN FORM */
+
+        .form-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 48px clamp(24px, 5vw, 76px);
+            background:
+                radial-gradient(
+                    ellipse at 12% 8%,
+                    rgba(0, 224, 224, 0.17),
+                    transparent 42%
+                ),
+                radial-gradient(
+                    ellipse at 90% 95%,
+                    rgba(35, 76, 255, 0.19),
+                    transparent 45%
+                ),
+                #080d24;
+            border-right: 1px solid rgba(84, 185, 255, 0.22);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            margin-bottom: 42px;
+            color: #eafcff;
+            font-size: 19px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .brand-icon {
+            display: grid;
+            place-items: center;
+            width: 38px;
+            height: 38px;
+            border: 1px solid rgba(0, 238, 255, 0.55);
+            border-radius: 12px;
+            background: rgba(0, 216, 255, 0.10);
+            color: #55f4ff;
+            box-shadow: 0 0 20px rgba(0, 209, 255, 0.12);
+        }
+
+        .brand-icon svg {
+            width: 23px;
+            height: 23px;
+        }
+
+        .eyebrow {
+            margin: 0 0 12px;
+            color: #42e9f5;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0 0 12px;
+            font-size: clamp(30px, 3vw, 40px);
+            line-height: 1.15;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            margin: 0 0 30px;
+            color: #9cacc9;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .signup-prompt {
+            margin: 0 0 25px;
+            color: #b8c5dc;
+            font-size: 13px;
+        }
+
+        a {
+            color: #58eaf5;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .message {
+            padding: 12px 14px;
+            margin: 0 0 16px;
+            border-radius: 9px;
+            font-size: 13px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .error {
+            background: rgba(255, 60, 90, 0.12);
+            color: #ffb8c4;
+            border: 1px solid rgba(255, 100, 120, 0.4);
+        }
+
+        .success {
+            background: rgba(30, 220, 160, 0.10);
+            color: #8fffd9;
+            border: 1px solid rgba(30, 220, 160, 0.3);
+        }
+
+        .field {
+            margin-bottom: 19px;
+        }
+
+        label {
+            display: block;
+            margin: 0 0 9px;
+            color: #dce8fa;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        input {
+            display: block;
+            width: 100%;
+            height: 47px;
+            padding: 0 14px;
+            border: 1px solid #283653;
+            border-radius: 9px;
+            outline: none;
+            background: #101a32;
+            color: #f4f8ff;
+            font-family: inherit;
+            font-size: 13px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input::placeholder {
+            color: #7585a2;
+        }
+
+        input:focus {
+            border-color: #19d8ed;
+            box-shadow: 0 0 0 3px rgba(0, 217, 238, 0.12);
+        }
+
+        .password-label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .password-label-row label {
+            margin-bottom: 9px;
+        }
+
+        .password-label-row a {
+            margin-bottom: 9px;
+            color: #8aa8d5;
+            font-size: 11px;
+        }
+
+        .primary-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            min-height: 48px;
+            margin-top: 6px;
+            border: 1px solid #315cff;
+            border-radius: 10px;
+            background: linear-gradient(105deg, #174cff, #245eff);
+            color: white;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(24, 76, 255, 0.22);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .primary-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 30px rgba(24, 76, 255, 0.35);
+        }
+
+        .primary-button:focus-visible,
+        .social-button:focus-visible,
+        a:focus-visible {
+            outline: 2px solid #58eaf5;
+            outline-offset: 3px;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: 25px 0 20px;
+            color: #7e8dab;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #25314a;
+        }
+
+        .social-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 11px;
+            width: 100%;
+            min-height: 43px;
+            margin-bottom: 11px;
+            border: 1px solid #293754;
+            border-radius: 9px;
+            background: rgba(16, 27, 49, 0.65);
+            color: #b9c6de;
+            font-family: inherit;
+            font-size: 12px;
+            cursor: not-allowed;
+            opacity: 0.72;
+        }
+
+        .google-icon {
+            color: #ffcf42;
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .facebook-icon {
+            display: grid;
+            place-items: center;
+            width: 17px;
+            height: 17px;
+            border-radius: 3px;
+            background: #1877f2;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .form-footer {
+            margin: 24px 0 0;
+            color: #6f809e;
+            font-size: 10px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .form-footer span {
+            color: #54dff0;
+        }
+
+        /* RIGHT: CYBERSECURITY ART */
+
+        .art-panel {
+            position: relative;
+            display: grid;
+            place-items: center;
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow: hidden;
+            isolation: isolate;
+            background:
+                radial-gradient(
+                    ellipse at 52% 43%,
+                    rgba(0, 105, 255, 0.22),
+                    transparent 42%
+                ),
+                radial-gradient(
+                    ellipse at 80% 80%,
+                    rgba(0, 235, 220, 0.10),
+                    transparent 38%
+                ),
+                #041329;
+        }
+
+        .art-panel::before {
+            position: absolute;
+            z-index: -1;
+            content: "";
+            inset: -20%;
+            background: repeating-radial-gradient(
+                ellipse at 50% 45%,
+                transparent 0 24px,
+                rgba(0, 137, 255, 0.10) 25px 26px,
+                transparent 27px 43px
+            );
+            transform: rotate(-22deg);
+        }
+
+        .art-glow {
+            position: absolute;
+            z-index: -1;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: #006cff;
+            filter: blur(110px);
+            opacity: 0.23;
+        }
+
+        .art-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 36px 24px 76px;
+            text-align: center;
+        }
+
+        .art-label {
+            margin: 0 0 8px;
+            color: #46eaf5;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 4px;
+        }
+
+        .art-heading {
+            margin: 0;
+            color: #edf8ff;
+            font-size: clamp(21px, 2.5vw, 31px);
+            line-height: 1.35;
+            letter-spacing: -0.5px;
+        }
+
+        .art-description {
+            max-width: 350px;
+            margin: 12px 0 0;
+            color: #91accd;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .shield {
+            display: block;
+            width: min(76%, 360px);
+            height: auto;
+            margin: 8px 0;
+            filter: drop-shadow(0 0 22px rgba(0, 191, 255, 0.52));
+            animation: shield-float 5s ease-in-out infinite;
+        }
+
+        .art-caption {
+            position: absolute;
+            right: 20px;
+            bottom: 26px;
+            left: 20px;
+            color: #78bce7;
+            font-size: 10px;
+            letter-spacing: 2.5px;
+            text-align: center;
+        }
+
+        .art-caption span {
+            color: #45eaf5;
+        }
+
+        @keyframes shield-float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        /* RESPONSIVE LAYOUT */
+
+        @media (max-width: 800px) {
+            .auth-card {
+                grid-template-columns: 1fr;
+            }
+
+            .form-panel {
+                grid-row: 2;
+                padding: 34px clamp(22px, 7vw, 48px);
+            }
+
+            .art-panel {
+                grid-row: 1;
+                min-height: 330px;
+                min-height: 35vh;
+            }
+
+            .art-content {
+                padding: 24px 20px 48px;
+            }
+
+            .shield {
+                width: min(45%, 185px);
+                margin: 0;
+            }
+
+            .art-label {
+                letter-spacing: 3px;
+            }
+
+            .art-heading {
+                font-size: 22px;
+            }
+
+            .art-description {
+                margin-top: 6px;
+                font-size: 11px;
+            }
+
+            .art-caption {
+                bottom: 14px;
+                font-size: 8px;
+                letter-spacing: 1.8px;
+            }
+
+            .brand {
+                margin-bottom: 28px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .art-panel {
+                min-height: 290px;
+            }
+
+            .form-panel {
+                padding: 28px 22px;
+            }
+
+            .brand {
+                margin-bottom: 25px;
+            }
+
+            .divider {
+                margin: 20px 0 16px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<main class="auth-card">
+
+    <section class="form-panel">
+        <div class="brand">
+            <span class="brand-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2.5 20 5.5V11c0 5-3.4 8.5-8 10.5C7.4 19.5 4 16 4 11V5.5L12 2.5Z"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linejoin="round"/>
+                    <path d="m8.5 12 2.3 2.3 4.8-5"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </span>
+            SafeScan AI
+        </div>
+
+        <p class="eyebrow">Welcome back</p>
+        <h1>Sign in</h1>
+        <p class="subtitle">
+            Access your security dashboard and continue browsing safer.
+        </p>
+
+        <p class="signup-prompt">
+            Don't have an account?
+            <a th:href="@{/signup}">Create account</a>
+        </p>
+
+        <p class="message error"
+           role="alert"
+           th:if="${error}"
+           th:text="${error}"></p>
+
+        <p class="message success"
+           role="status"
+           th:if="${success}"
+           th:text="${success}"></p>
+
+        <form th:action="@{/login}" action="/login" method="post">
+            <div class="field">
+                <label for="email">Email address</label>
+                <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="you@example.com"
+                    autocomplete="email"
+                    maxlength="254"
+                    required>
+            </div>
+
+            <div class="field">
+                <div class="password-label-row">
+                    <label for="password">Password</label>
+                </div>
+                <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                    required>
+            </div>
+
+            <button class="primary-button" type="submit">
+                Sign in
+                <span aria-hidden="true">→</span>
+            </button>
+        </form>
+
+        <div class="divider">OR CONTINUE WITH</div>
+
+        <button class="social-button"
+                type="button"
+                disabled
+                title="Google sign-in has not been configured">
+            <span class="google-icon" aria-hidden="true">G</span>
+            Continue with Google
+        </button>
+
+        <button class="social-button"
+                type="button"
+                disabled
+                title="Facebook sign-in has not been configured">
+            <span class="facebook-icon" aria-hidden="true">f</span>
+            Continue with Facebook
+        </button>
+
+        <p class="form-footer">
+            Protected by <span>SafeScan AI</span><br>
+            AI-powered phishing and scam detection
+        </p>
+    </section>
+
+    <section class="art-panel" aria-label="SafeScan cybersecurity illustration">
+        <div class="art-glow"></div>
+
+        <div class="art-content">
+            <p class="art-label">YOUR DIGITAL SHIELD</p>
+            <h2 class="art-heading">Stay alert. Stay protected.</h2>
+
+            <svg class="shield"
+                 viewBox="0 0 400 440"
+                 xmlns="http://www.w3.org/2000/svg"
+                 role="img"
+                 aria-label="Glowing blue shield with a security keyhole">
+
+                <defs>
+                    <linearGradient id="shieldFill"
+                                    x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#00f5ff"/>
+                        <stop offset="45%" stop-color="#087aff"/>
+                        <stop offset="100%" stop-color="#123dff"/>
+                    </linearGradient>
+
+                    <linearGradient id="shieldEdge"
+                                    x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#a8ffff"/>
+                        <stop offset="100%" stop-color="#1675ff"/>
+                    </linearGradient>
+
+                    <pattern id="circuits"
+                             width="28" height="28"
+                             patternUnits="userSpaceOnUse">
+                        <path d="M0 14 H9 V4 H20 M14 28 V20 H28"
+                              fill="none"
+                              stroke="#8cffff"
+                              stroke-width="1.2"
+                              opacity=".65"/>
+                        <circle cx="20" cy="4" r="2" fill="#c0ffff"/>
+                        <circle cx="14" cy="20" r="2" fill="#c0ffff"/>
+                    </pattern>
+
+                    <clipPath id="shieldClip">
+                        <path d="M200 34 L322 78 L309 224
+                                 Q286 315 200 366
+                                 Q114 315 91 224 L78 78 Z"/>
+                    </clipPath>
+                </defs>
+
+                <circle cx="200" cy="195" r="155"
+                        fill="none" stroke="#087bff"
+                        stroke-width="1.5" opacity=".25"/>
+
+                <circle cx="200" cy="195" r="132"
+                        fill="none" stroke="#00eaff"
+                        stroke-width="1" stroke-dasharray="4 8"
+                        opacity=".6"/>
+
+                <path d="M200 34 L322 78 L309 224
+                         Q286 315 200 366
+                         Q114 315 91 224 L78 78 Z"
+                      fill="url(#shieldFill)"
+                      stroke="url(#shieldEdge)"
+                      stroke-width="7"/>
+
+                <rect x="75" y="30" width="250" height="340"
+                      fill="url(#circuits)"
+                      clip-path="url(#shieldClip)"
+                      opacity=".8"/>
+
+                <path d="M200 54 L300 91 L289 218
+                         Q271 287 200 334
+                         Q129 287 111 218 L100 91 Z"
+                      fill="none"
+                      stroke="#a2ffff"
+                      stroke-width="2"
+                      opacity=".85"/>
+
+                <path d="M200 128
+                         A40 40 0 0 0 160 168
+                         A40 40 0 0 0 185 206
+                         L185 258 L215 258 L215 206
+                         A40 40 0 0 0 240 168
+                         A40 40 0 0 0 200 128 Z"
+                      fill="#00172d"
+                      stroke="#9dffff"
+                      stroke-width="3"/>
+
+                <circle cx="200" cy="168" r="18" fill="#00172d"/>
+
+                <path d="M125 105 L145 95 M255 95 L275 105
+                         M112 200 L130 200 M270 200 L288 200"
+                      stroke="#b8ffff"
+                      stroke-width="3"
+                      stroke-linecap="round"/>
+
+                <path d="M160 286 L180 299 M240 286 L220 299"
+                      stroke="#70faff"
+                      stroke-width="3"
+                      stroke-linecap="round"/>
+            </svg>
+
+            <p class="art-description">
+                Detect suspicious links, scan QR codes and identify
+                potential online threats with SafeScan AI.
+            </p>
+        </div>
+
+        <div class="art-caption">
+            <span>●</span> SMARTER SECURITY. SAFER BROWSING.
+        </div>
+    </section>
+
+</main>
+</body>
+</html>

@@ -654,12 +654,12 @@
             color: var(--muted);
         }
 
-        .profile-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
+        profile-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+        align-items: start;
+    }
         .info-row {
             padding: 13px 0;
             border-bottom: 1px solid var(--border);
@@ -1251,173 +1251,183 @@
         </section>
 
 
+        
         <!-- ================= PROFILE ================= -->
 
-        <section id="profile" class="page">
+    <section id="profile" class="page">
 
-            <div class="profile-header">
+    <!-- Profile Header -->
+    <div class="profile-header">
 
-                <div class="avatar">P</div>
+        <div class="avatar">P</div>
 
-                <div>
-                    <h2>Poojitha</h2>
-                    <p>Project Developer • CSE Student</p>
+        <div>
+            <h2>Poojitha</h2>
+            <p>CSE Student • Project Developer</p>
 
-                    <div style="margin-top:10px;color:#00ffa3;font-size:12px;">
-                        ● SafeScan AI Developer
-                    </div>
+            <div style="margin-top:10px;color:#00ffa3;font-size:12px;">
+                ● SafeScan AI Developer
+            </div>
+        </div>
+
+    </div>
+
+    <div class="profile-grid">
+
+        <!-- Profile Information -->
+        <div class="card">
+
+            <div class="card-title">👤 Profile Information</div>
+
+            <div class="info-row">
+                <div class="info-label">Name</div>
+                <div class="info-value">Poojitha</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">Department</div>
+                <div class="info-value">Computer Science and Engineering</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">College</div>
+                <div class="info-value">MLR Institute of Technology</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">Role</div>
+                <div class="info-value">Student Project Developer</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">Project</div>
+                <div class="info-value">SafeScan AI</div>
+            </div>
+
+        </div>
+
+        <!-- Project Information -->
+        <div class="card">
+
+            <div class="card-title">🛡 Project Information</div>
+
+            <div class="info-row">
+                <div class="info-label">Frontend</div>
+                <div class="info-value">HTML / CSS / JavaScript</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">Backend</div>
+                <div class="info-value">Java Spring Boot</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">Database</div>
+                <div class="info-value">H2 Database</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">QR Engine</div>
+                <div class="info-value">ZXing</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">Detection Engine</div>
+                <div class="info-value">Security Heuristic Analysis</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">Python Service</div>
+                <div class="info-value">Flask</div>
+            </div>
+
+        </div>
+
+        <!-- System Information -->
+        <div class="card">
+
+            <div class="card-title">⚡ System Information</div>
+
+            <div class="status-list">
+
+                <div class="status-row">
+                    <span>Java Backend</span>
+                    <span>Spring Boot</span>
+                </div>
+
+                <div class="status-row">
+                    <span>Python Service</span>
+                    <span>Flask</span>
+                </div>
+
+                <div class="status-row">
+                    <span>QR Scanner</span>
+                    <span>ZXing</span>
+                </div>
+
+                <div class="status-row">
+                    <span>Database</span>
+                    <span>H2</span>
+                </div>
+
+                <div class="status-row">
+                    <span>Detection</span>
+                    <span>Heuristic Analysis</span>
                 </div>
 
             </div>
 
+        </div>
 
-            <div class="profile-grid">
+        <!-- SafeScan Principles -->
+        <div class="card">
 
-                <div class="card">
+            <div class="card-title">🔐 SafeScan Principles</div>
 
-                    <div class="card-title">👤 Profile Information</div>
+            <div class="features">
 
-                    <div class="info-row">
-                        <div class="info-label">Name</div>
-                        <div class="info-value">Poojitha</div>
-                    </div>
-
-                    <div class="info-row">
-                        <div class="info-label">Role</div>
-                        <div class="info-value">CSE Student / Project Developer</div>
-                    </div>
-
-                    <div class="info-row">
-                        <div class="info-label">Project</div>
-                        <div class="info-value">SafeScan AI</div>
-                    </div>
-
-                    <div class="info-row">
-                        <div class="info-label">Project Type</div>
-                        <div class="info-value">
-                            AI-Powered Multi-Channel Scam Detection
-                        </div>
-                    </div>
-
+                <div class="feature">
+                    <div class="feature-icon">🔒</div>
+                    <h4>Safety First</h4>
+                    <p>
+                        Evaluate suspicious content before users decide
+                        whether to open a link.
+                    </p>
                 </div>
 
-
-                <div class="card">
-
-                    <div class="card-title">🛡 Project Information</div>
-
-                    <div class="info-row">
-                        <div class="info-label">Frontend</div>
-                        <div class="info-value">HTML / CSS / JavaScript</div>
-                    </div>
-
-                    <div class="info-row">
-                        <div class="info-label">Backend</div>
-                        <div class="info-value">Java Spring Boot</div>
-                    </div>
-
-                    <div class="info-row">
-                        <div class="info-label">Database</div>
-                        <div class="info-value">H2 Database</div>
-                    </div>
-
-                    <div class="info-row">
-                        <div class="info-label">QR Engine</div>
-                        <div class="info-value">ZXing</div>
-                    </div>
-
-                    <div class="info-row">
-                        <div class="info-label">Detection Engine</div>
-                        <div class="info-value">Security Heuristic Analysis</div>
-                    </div>
-
+                <div class="feature">
+                    <div class="feature-icon">⚡</div>
+                    <h4>Fast Analysis</h4>
+                    <p>
+                        Check for common phishing and scam indicators
+                        to help users assess potential risks.
+                    </p>
                 </div>
 
-
-                <div class="card">
-
-                    <div class="card-title">⚡ System Information</div>
-
-                    <div class="status-list">
-
-                        <div class="status-row">
-                            <span>Backend</span>
-                            <span class="online">● Online</span>
-                        </div>
-
-                        <div class="status-row">
-                            <span>Scanner</span>
-                            <span class="online">● Active</span>
-                        </div>
-
-                        <div class="status-row">
-                            <span>QR Engine</span>
-                            <span class="online">● Ready</span>
-                        </div>
-
-                        <div class="status-row">
-                            <span>Database</span>
-                            <span class="online">● Connected</span>
-                        </div>
-
-                        <div class="status-row">
-                            <span>Security Engine</span>
-                            <span class="online">● Active</span>
-                        </div>
-
-                    </div>
-
+                <div class="feature">
+                    <div class="feature-icon">📱</div>
+                    <h4>Multi-Channel</h4>
+                    <p>
+                        Analyze supported URLs, text messages and QR codes.
+                    </p>
                 </div>
 
-
-                <div class="card">
-
-                    <div class="card-title">🔐 SafeScan Principles</div>
-
-                    <div class="features">
-
-                        <div class="feature">
-                            <div class="feature-icon">🔒</div>
-                            <h4>Privacy First</h4>
-                            <p>
-                                Analyze suspicious content without requiring
-                                users to open potentially dangerous links.
-                            </p>
-                        </div>
-
-                        <div class="feature">
-                            <div class="feature-icon">⚡</div>
-                            <h4>Fast Analysis</h4>
-                            <p>
-                                Quickly evaluate common phishing and scam
-                                indicators.
-                            </p>
-                        </div>
-
-                        <div class="feature">
-                            <div class="feature-icon">📱</div>
-                            <h4>Multi-Channel</h4>
-                            <p>
-                                Supports URLs, messages and QR codes.
-                            </p>
-                        </div>
-
-                        <div class="feature">
-                            <div class="feature-icon">📊</div>
-                            <h4>Explainable Results</h4>
-                            <p>
-                                Provides a risk score together with
-                                detected indicators and recommendations.
-                            </p>
-                        </div>
-
-                    </div>
-
+                <div class="feature">
+                    <div class="feature-icon">📊</div>
+                    <h4>Explainable Results</h4>
+                    <p>
+                        Present risk scores, detected indicators and
+                        recommendations when provided by the analysis engine.
+                    </p>
                 </div>
 
             </div>
 
-        </section>
+        </div>
+
+    </div>
+
+</section>
 
 
         <footer>
