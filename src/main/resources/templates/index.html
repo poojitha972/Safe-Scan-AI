@@ -1809,10 +1809,19 @@
 
     function reportScam() {
     const confirmed = confirm(
-        "Continue to India's official cybercrime reporting portal?"
+        "Continue to the official cybercrime reporting guide?"
     );
 
     if (confirmed) {
+        alert(
+            "How to report a scam:\n\n" +
+            "1. Choose OTHER CYBER CRIME for a scam incident, or Report Suspect to report a suspicious URL, phone number, email, or similar identifier.\n\n" +
+            "2. Follow the portal's instructions and register with your mobile number if required.\n\n" +
+            "3. Enter accurate details and attach available evidence, such as screenshots, messages, or the suspicious URL.\n\n" +
+            "4. Review the information and submit it yourself.\n\n" +
+            "Important: Only report genuine incidents or suspicious identifiers. SafeScan does not submit reports for you."
+        );
+
         window.location.href = "https://cybercrime.gov.in/";
     }
 }
