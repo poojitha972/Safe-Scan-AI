@@ -401,7 +401,36 @@
             transform: translateY(-1px);
             opacity: .92;
         }
+        /* SCAN LOADING INDICATOR — PASTE HERE */
+        .loading-indicator {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--accent);
+            font-size: 14px;
+            font-weight: bold;
+            padding: 12px 0;
+        }
 
+        .loading-spinner {
+            width: 23px;
+            height: 23px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: scanSpin 0.8s linear infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes scanSpin {
+            to { transform: rotate(360deg); }
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
         /* RESULT */
 
         .result {
@@ -1601,7 +1630,30 @@
         }
     }
 
+    function setScanLoading(resultId, isLoading) {
+    const result = document.getElementById(resultId);
 
+    document.querySelectorAll(
+        '.actions button.primary'
+    ).forEach(button => {
+        button.disabled = isLoading;
+        button.textContent = isLoading
+            ? "Scanning..."
+            : "Analyze Now";
+    });
+
+    if (isLoading) {
+        result.innerHTML = `
+            <div class="loading-indicator" role="status"
+                 aria-live="polite">
+                <span class="loading-spinner"></span>
+                Scanning your content... Please wait.
+            </div>
+        `;
+        result.classList.add("show");
+    }
+}
+    
     /* ANALYSIS */
 
     async function analyzeScan() {
@@ -1622,6 +1674,8 @@
 
             const formData = new FormData();
             formData.append("file", file);
+
+            setScanLoading("result", true);
 
             try {
 
@@ -1645,10 +1699,10 @@
                 displayAnalysis("result", data);
 
                 addHistory(
-                "QR Code",
-                data.decodedText || "QR content",
-                data
-            );
+                    "QR Code",
+                    data.decodedText || "QR content",
+                    data
+                );
 
             } catch (error) {
 
@@ -1657,37 +1711,36 @@
                     "Unable to connect to SafeScan backend.",
                     "danger"
                 );
+
+            } finally {
+                setScanLoading("result", false);
             }
 
             return;
         }
 
-
         const input =
             document.getElementById("scanInput").value.trim();
 
         if (!input) {
-
             showResult(
                 "result",
                 "Please enter something to scan.",
                 "warning"
             );
-
             return;
         }
+
+        setScanLoading("result", true);
 
         try {
 
             const response =
                 await fetch("/api/scan", {
-
                     method: "POST",
-
                     headers: {
                         "Content-Type": "application/json"
                     },
-
                     body: JSON.stringify({
                         input: input
                     })
@@ -1712,6 +1765,9 @@
                 "Unable to connect to SafeScan backend.",
                 "danger"
             );
+
+        } finally {
+            setScanLoading("result", false);
         }
     }
 
@@ -1722,27 +1778,24 @@
             document.getElementById("scanInput2").value.trim();
 
         if (!input) {
-
             showResult(
                 "result2",
                 "Please enter something to scan.",
                 "warning"
             );
-
             return;
         }
+
+        setScanLoading("result2", true);
 
         try {
 
             const response =
                 await fetch("/api/scan", {
-
                     method: "POST",
-
                     headers: {
                         "Content-Type": "application/json"
                     },
-
                     body: JSON.stringify({
                         input: input
                     })
@@ -1767,9 +1820,11 @@
                 "Unable to connect to SafeScan backend.",
                 "danger"
             );
+
+        } finally {
+            setScanLoading("result2", false);
         }
     }
-
 
     function displayAnalysis(elementId, data) {
 
