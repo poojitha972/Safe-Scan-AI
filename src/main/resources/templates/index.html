@@ -1790,14 +1790,32 @@
                 </p>
             `;
         }
-
+        if (category === "High Risk") {
+    html += `
+        <div style="margin-top: 16px;">
+            <button type="button"
+                    style="background:#dc2626;color:white;padding:12px 18px;border:none;border-radius:8px;cursor:pointer;font-weight:bold;"
+                    onclick="reportScam()">
+                🚨 Report This Scam
+            </button>
+        </div>
+    `;
+}
         element.innerHTML = html;
         element.classList.add("show");
 
         updateStats(category);
     }
 
+    function reportScam() {
+    const confirmed = confirm(
+        "Continue to India's official cybercrime reporting portal?"
+    );
 
+    if (confirmed) {
+        window.open("https://cybercrime.gov.in/", "_blank");
+    }
+}
     function showResult(id, message, type) {
 
         const element =
