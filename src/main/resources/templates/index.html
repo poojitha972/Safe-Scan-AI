@@ -506,6 +506,54 @@
             color: var(--muted);
             word-break: break-word;
         }
+        
+        .history-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .history-safe {
+            color: #4ade80;
+            background: rgba(34, 197, 94, 0.12);
+        }
+
+        .history-suspicious {
+            color: #ffc857;
+            background: rgba(255, 200, 87, 0.12);
+        }
+
+        .history-high-risk {
+            color: #ff7084;
+            background: rgba(255, 77, 103, 0.14);
+        }
+
+        .history-unavailable {
+            color: #c4b5fd;
+            background: rgba(139, 92, 246, 0.14);
+        }
+
+        .history-score {
+            margin-top: 12px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .history-explanation {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .history-time {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
 
         /* SETTINGS */
 
@@ -1597,9 +1645,10 @@
                 displayAnalysis("result", data);
 
                 addHistory(
-                    "QR Code",
-                    data.decodedText || "QR content"
-                );
+                "QR Code",
+                data.decodedText || "QR content",
+                data
+            );
 
             } catch (error) {
 
@@ -1652,7 +1701,8 @@
                 currentScanType === "url"
                     ? "URL"
                     : "Message",
-                input
+                input,
+                data
             );
 
         } catch (error) {
@@ -1706,7 +1756,8 @@
                 currentScanType === "message"
                     ? "Message"
                     : "URL",
-                input
+                input,
+                data
             );
 
         } catch (error) {
@@ -1898,62 +1949,108 @@
             stats.highRisk;
     }
 
+/* HISTORY */
 
-    /* HISTORY */
+function addHistory(type, content, data = {}) {
+    const rawScore = data.riskScore;
+    const score = Number(rawScore);
+    const validScore =
+        rawScore !== null &&
+        rawScore !== undefined &&
+        rawScore !== "" &&
+        Number.isFinite(score) &&
+        score >= 0 &&
+        score <= 100;
 
-    function addHistory(type, content) {
+    const category = data.category || "Analysis Unavailable";
 
-        history.unshift({
-            type: type,
-            content: content,
-            time: new Date().toLocaleTimeString()
-        });
+    history.unshift({
+        type: type,
+        content: content,
+        time: new Date().toLocaleTimeString(),
+        score: validScore ? score : null,
+        category: category,
+        explanation: data.reasons || "",
+        recommendation: data.recommendation || ""
+    });
 
-        renderHistory();
+    renderHistory();
+}
+
+function renderHistory() {
+    const list = document.getElementById("historyList");
+
+    if (history.length === 0) {
+        list.innerHTML = `
+            <div class="history-empty">
+                No scans yet.<br>
+                Your scan results will appear here.
+            </div>
+        `;
+        return;
     }
 
+    list.innerHTML = history.map(item => {
+        const category = item.category || "Analysis Unavailable";
 
-    function renderHistory() {
+        let badgeClass = "history-unavailable";
 
-        const list =
-            document.getElementById("historyList");
-
-        if (history.length === 0) {
-
-            list.innerHTML = `
-                <div class="history-empty">
-                    No scans yet.<br>
-                    Your scan results will appear here.
-                </div>
-            `;
-
-            return;
+        if (category === "Safe") {
+            badgeClass = "history-safe";
+        } else if (category === "Suspicious") {
+            badgeClass = "history-suspicious";
+        } else if (category === "High Risk") {
+            badgeClass = "history-high-risk";
         }
 
-        list.innerHTML = history.map(item => `
+        const scoreText = item.score === null
+            ? "Score unavailable"
+            : `${item.score}/100`;
 
+        const explanation = item.explanation ||
+            "No explanation was provided by the scanner.";
+
+        const recommendation = item.recommendation || "";
+
+        return `
             <div class="history-item">
-
                 <div class="history-item-top">
-
                     <div class="history-type">
                         ${escapeHtml(item.type)}
                     </div>
 
-                    <div style="color:var(--muted);font-size:11px;">
+                    <span class="history-badge ${badgeClass}">
+                        ${escapeHtml(category)}
+                    </span>
+
+                    <div class="history-time">
                         ${escapeHtml(item.time)}
                     </div>
-
                 </div>
 
                 <div class="history-text">
                     ${escapeHtml(item.content)}
                 </div>
 
-            </div>
+                <div class="history-score">
+                    Risk score: ${scoreText}
+                </div>
 
-        `).join("");
-    }
+                <div class="history-explanation">
+                    <strong>Why:</strong>
+                    ${escapeHtml(explanation)}
+                </div>
+
+                ${recommendation ? `
+                    <div class="history-explanation">
+                        <strong>Recommended action:</strong>
+                        ${escapeHtml(recommendation)}
+                    </div>
+                ` : ""}
+            </div>
+        `;
+    }).join("");
+}
 
 
     function clearHistory() {
