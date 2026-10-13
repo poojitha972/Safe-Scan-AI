@@ -1535,7 +1535,41 @@
         suspicious: 0,
         highRisk: 0
     };
+        async function loadHistory() {
+        try {
+            const response = await fetch("/api/history");
 
+            if (!response.ok) {
+                console.error("Could not load scan history.");
+                return;
+            }
+
+            const savedHistory = await response.json();
+
+            history = savedHistory.map(scan => ({
+                ...scan,
+                time: scan.time
+                    ? new Date(scan.time).toLocaleString()
+                    : ""
+            }));
+
+            stats.total = history.length;
+            stats.safe = history.filter(s => s.category === "Safe").length;
+            stats.suspicious = history.filter(s => s.category === "Suspicious").length;
+            stats.highRisk = history.filter(s => s.category === "High Risk").length;
+
+            renderHistory();
+
+            document.getElementById("totalScans").textContent = stats.total;
+            document.getElementById("safeScans").textContent = stats.safe;
+            document.getElementById("suspiciousScans").textContent = stats.suspicious;
+            document.getElementById("highRiskScans").textContent = stats.highRisk;
+
+            updateSettingsStats();
+        } catch (error) {
+            console.error("Error loading scan history:", error);
+        }
+    }
     let history = [];
 
 
@@ -2006,9 +2040,11 @@
 
 /* HISTORY */
 
-function addHistory(type, content, data = {}) {
+
+async function addHistory(type, content, data = {}) {
     const rawScore = data.riskScore;
     const score = Number(rawScore);
+
     const validScore =
         rawScore !== null &&
         rawScore !== undefined &&
@@ -2017,19 +2053,37 @@ function addHistory(type, content, data = {}) {
         score >= 0 &&
         score <= 100;
 
-    const category = data.category || "Analysis Unavailable";
-
-    history.unshift({
+    const scan = {
         type: type,
         content: content,
-        time: new Date().toLocaleTimeString(),
         score: validScore ? score : null,
-        category: category,
-        explanation: data.reasons || "",
+        category: data.category || "Analysis Unavailable",
+        explanation: Array.isArray(data.reasons)
+            ? data.reasons.join(", ")
+            : (data.reasons || ""),
         recommendation: data.recommendation || ""
-    });
+    };
 
-    renderHistory();
+    try {
+        const response = await fetch("/api/history", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(scan)
+        });
+
+        if (!response.ok) {
+            console.error("Could not save scan history:", response.status);
+            alert("Scan completed, but its history could not be saved. Please log in again.");
+            return;
+        }
+
+        await loadHistory();
+    } catch (error) {
+        console.error("Error saving scan history:", error);
+        alert("Scan completed, but the history server could not be reached.");
+    }
 }
 
 function renderHistory() {
@@ -2108,8 +2162,8 @@ function renderHistory() {
 }
 
 
-    function clearHistory() {
-
+    
+    async function clearHistory() {
         const confirmEnabled =
             document.getElementById("confirmToggle")?.checked !== false;
 
@@ -2120,24 +2174,39 @@ function renderHistory() {
             return;
         }
 
-        history = [];
+        try {
+            const response = await fetch("/api/history", {
+                method: "DELETE"
+            });
 
-        stats = {
-            total: 0,
-            safe: 0,
-            suspicious: 0,
-            highRisk: 0
-        };
+            if (!response.ok) {
+                alert("Could not clear history. Please log in and try again.");
+                return;
+            }
 
-        document.getElementById("totalScans").textContent = "0";
-        document.getElementById("safeScans").textContent = "0";
-        document.getElementById("suspiciousScans").textContent = "0";
-        document.getElementById("highRiskScans").textContent = "0";
+            history = [];
 
-        renderHistory();
-        updateSettingsStats();
+            stats = {
+                total: 0,
+                safe: 0,
+                suspicious: 0,
+                highRisk: 0
+            };
+
+            document.getElementById("totalScans").textContent = "0";
+            document.getElementById("safeScans").textContent = "0";
+            document.getElementById("suspiciousScans").textContent = "0";
+            document.getElementById("highRiskScans").textContent = "0";
+
+            renderHistory();
+            updateSettingsStats();
+
+            alert("Scan history cleared successfully.");
+        } catch (error) {
+            console.error("Error clearing history:", error);
+            alert("Unable to connect to the server. Please try again.");
+        }
     }
-
 
     /* CLEAR SCANNER */
 
@@ -2168,7 +2237,7 @@ function renderHistory() {
         element.classList.add("selected");
     }
 
-
+    
     function setTheme(theme, element) {
 
         document.querySelectorAll(".option").forEach(option => {
@@ -2203,7 +2272,18 @@ function renderHistory() {
         }, 2500);
     }
 
+
+    /* LOAD SAVED SCAN HISTORY WHEN PAGE OPENS */
+
+    document.addEventListener("DOMContentLoaded", function () {
+        loadHistory();
+    });
+
 </script>
 
 </body>
 </html>
+
+
+
+   
