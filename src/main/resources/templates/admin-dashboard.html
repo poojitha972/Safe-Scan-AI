@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | SafeScan AI</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        :root {
+            --bg: #07111f;
+            --panel: #0e1c2e;
+            --panel-light: #12243a;
+            --border: #233a55;
+            --cyan: #53c8ff;
+            --text: #eef5ff;
+            --muted: #aabbd0;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            color: var(--text);
+            background: radial-gradient(circle at 85% 0%, #102b48 0, transparent 32%), var(--bg);
+        }
+
+        a { color: var(--cyan); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        header {
+            padding: 20px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(7, 17, 31, 0.9);
+        }
+
+        .brand { color: var(--cyan); font-size: 22px; font-weight: bold; }
+
+        .sign-out {
+            padding: 10px 16px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            font-size: 14px;
+        }
+
+        main { max-width: 1500px; margin: 0 auto; padding: 42px 7%; }
+
+        .eyebrow {
+            color: var(--cyan);
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        h1 { margin: 12px 0; font-size: clamp(27px, 4vw, 36px); }
+        h2 { margin-top: 0; font-size: 20px; }
+        h3 { margin: 0 0 12px; font-size: 16px; }
+
+        .muted { color: var(--muted); line-height: 1.6; }
+        .section-heading { margin: 34px 0 16px; }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            margin-top: 28px;
+        }
+
+        .card {
+            min-width: 0;
+            padding: 24px;
+            background: linear-gradient(145deg, var(--panel), #0b192a);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-label { margin: 0; color: var(--muted); font-size: 14px; }
+        .number { margin: 14px 0; color: var(--cyan); font-size: 38px; font-weight: bold; }
+
+        .card-description {
+            margin-bottom: 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .card-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .card-icon {
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            color: var(--cyan);
+            background: rgba(83, 200, 255, 0.08);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 21px;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            padding: 7px 10px;
+            color: #d8e7f7;
+            background: #192b40;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            background: #f0bd62;
+            border-radius: 50%;
+        }
+
+        .two-columns {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+            gap: 18px;
+            margin-top: 18px;
+        }
+
+        .activity-empty {
+            padding: 25px 18px;
+            text-align: center;
+            background: rgba(7, 17, 31, 0.4);
+            border: 1px dashed #304964;
+            border-radius: 12px;
+        }
+
+        .activity-empty .symbol { margin-bottom: 12px; color: var(--cyan); font-size: 28px; }
+        .quick-links { display: grid; gap: 12px; }
+
+        .quick-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 15px;
+            color: var(--text);
+            background: var(--panel-light);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        .quick-link span:last-child { color: var(--cyan); font-size: 20px; }
+
+        .info-note {
+            margin-top: 22px;
+            padding: 16px 18px;
+            color: var(--muted);
+            background: rgba(83, 200, 255, 0.04);
+            border-left: 3px solid var(--cyan);
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .scan-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .scan-table th, .scan-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        footer {
+            padding: 22px 7%;
+            color: var(--muted);
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+        }
+
+        @media (max-width: 760px) {
+            main { padding: 30px 5%; }
+            header { padding: 18px 5%; }
+            .stats, .two-columns { grid-template-columns: 1fr; }
+            .card { padding: 20px; }
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <div class="brand">🛡 SafeScan AI</div>
+    <a class="sign-out" th:href="@{/logout}">Sign Out ↗</a>
+</header>
+
+<main>
+    <p class="eyebrow">ADMINISTRATOR PANEL</p>
+
+    <h1>Welcome, <span th:text="${adminName}">Admin</span></h1>
+
+    <p class="muted">Monitor your SafeScan AI application from one place.</p>
+
+    <h2 class="section-heading">Dashboard Overview</h2>
+
+    <section class="stats">
+        <article class="card">
+            <div class="card-top">
+                <div class="card-icon">♙</div>
+                <div>
+                    <h3>Registered Accounts</h3>
+                    <p class="card-label">Total users</p>
+                </div>
+            </div>
+            <div class="number" th:text="${totalUsers}">0</div>
+            <p class="card-description">Total accounts registered in the database.</p>
+        </article>
+
+        <article class="card">
+            <div class="card-top">
+                <div class="card-icon">🛡</div>
+                <div>
+                    <h3>Admin Access</h3>
+                    <p class="card-label">Session security</p>
+                </div>
+            </div>
+            <div class="status">
+                <span class="status-dot"></span>
+                Session verified
+            </div>
+            <p class="card-description">Your administrator session is verified by the backend.</p>
+        </article>
+
+        <article class="card">
+            <div class="card-top">
+                <div class="card-icon">⌕</div>
+                <div>
+                    <h3>Scan Analytics</h3>
+                    <p class="card-label">Saved scan records</p>
+                </div>
+            </div>
+            <div class="number" th:text="${totalScans}">0</div>
+            <p class="card-description">
+                Safe: <span th:text="${safeScans}">0</span> ·
+                Suspicious: <span th:text="${suspiciousScans}">0</span> ·
+                High Risk: <span th:text="${highRiskScans}">0</span>
+            </p>
+        </article>
+
+        <article class="card">
+            <div class="card-top">
+                <div class="card-icon">⌘</div>
+                <div>
+                    <h3>System Health</h3>
+                    <p class="card-label">Application services</p>
+                </div>
+            </div>
+            <div class="status">
+                <span class="status-dot"></span>
+                Monitoring not connected
+            </div>
+            <p class="card-description">
+                Service availability will be shown after adding backend health checks.
+            </p>
+        </article>
+    </section>
+
+    <section class="two-columns">
+        <article class="card">
+            <h2>Recent Scan Activity</h2>
+            <p class="muted">Review recent URL, message, and QR-code scans.</p>
+
+            <div th:if="${#lists.isEmpty(recentScans)}" class="activity-empty">
+                <div class="symbol">◷</div>
+                <h3>No saved scans yet</h3>
+                <p class="muted">Saved scan activity will appear here.</p>
+            </div>
+
+            <div th:if="${!#lists.isEmpty(recentScans)}" style="overflow-x:auto">
+                <table class="scan-table">
+                    <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Risk</th>
+                        <th>Score</th>
+                        <th>Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="scan : ${recentScans}">
+                        <td th:text="${scan.type}">URL</td>
+                        <td th:text="${scan.category}">Safe</td>
+                        <td th:text="${scan.riskScore}">0</td>
+                        <td th:text="${scan.scannedAt != null ? #temporals.format(scan.scannedAt, 'dd MMM yyyy HH:mm') : '—'}">—</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+
+        <article class="card">
+            <h2>Quick Navigation</h2>
+            <p class="muted">Shortcuts to existing application pages.</p>
+
+            <div class="quick-links">
+                <a class="quick-link" th:href="@{/login}">
+                    <span>Open User Sign In</span>
+                    <span>→</span>
+                </a>
+
+                <a class="quick-link" th:href="@{/logout}">
+                    <span>Sign Out of Admin</span>
+                    <span>↗</span>
+                </a>
+            </div>
+
+            <div class="info-note">
+                <strong>Administrator note</strong><br>
+                User management and scan analytics will be connected to real backend data before they are used for administrative decisions.
+            </div>
+        </article>
+    </section>
+</main>
+
+<footer>SafeScan AI · Administrator Dashboard</footer>
+</body>
+</html>

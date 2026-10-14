@@ -6,7 +6,6 @@ import com.safescan.safescan.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,6 +28,11 @@ public class AuthController {
         return "login";
     }
 
+    @GetMapping("/admin/login")
+    public String adminLoginPage() {
+        return "admin-login";
+    }
+
     @GetMapping("/signup")
     public String signupPage() {
         return "signup";
@@ -46,7 +50,8 @@ public class AuthController {
 
         if (cleanName.isEmpty() || password.length() < 8) {
             redirectAttributes.addFlashAttribute(
-                    "error", "Enter a name and a password of at least 8 characters.");
+                    "error",
+                    "Enter a name and a password of at least 8 characters.");
             return "redirect:/signup";
         }
 
@@ -86,6 +91,29 @@ public class AuthController {
                     redirectAttributes.addFlashAttribute(
                             "error", "Invalid email or password.");
                     return "redirect:/login";
+                });
+    }
+
+    @PostMapping("/admin/login")
+    public String adminLogin(
+            @RequestParam String email,
+            @RequestParam String password,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        return userRepository.findByEmail(email.trim().toLowerCase())
+                .filter(user -> "ADMIN".equals(user.getRole()))
+                .filter(user -> passwordEncoder.matches(
+                        password, user.getPassword()))
+                .map(user -> {
+                    session.removeAttribute("userId");
+                    session.setAttribute("adminUserId", user.getId());
+                    return "redirect:/admin";
+                })
+                .orElseGet(() -> {
+                    redirectAttributes.addFlashAttribute(
+                            "error", "Invalid admin email or password.");
+                    return "redirect:/admin/login";
                 });
     }
 
