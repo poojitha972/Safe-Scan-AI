@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Sign In | SafeScan AI</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+            font-family: Arial, sans-serif;
+            color: #eef5ff;
+            background: #07111f;
+        }
+        .card {
+            width: 100%;
+            max-width: 430px;
+            padding: 36px;
+            border: 1px solid #233a55;
+            border-radius: 20px;
+            background: #0e1c2e;
+            box-shadow: 0 20px 70px #0006;
+        }
+        .brand { color: #53c8ff; font-weight: bold; font-size: 22px; }
+        .label { margin-top: 30px; color: #53c8ff; font-size: 12px; letter-spacing: 2px; }
+        h1 { margin-bottom: 10px; }
+        p { color: #aabbd0; line-height: 1.6; }
+        label { display: block; margin: 20px 0 8px; }
+        input {
+            width: 100%;
+            padding: 13px;
+            color: white;
+            background: #07111f;
+            border: 1px solid #344b65;
+            border-radius: 9px;
+        }
+        button {
+            width: 100%;
+            margin-top: 24px;
+            padding: 14px;
+            border: 0;
+            border-radius: 9px;
+            background: #39bdf8;
+            color: #07111f;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        a { color: #53c8ff; }
+        .error { color: #ff9999; }
+        .back { display: block; margin-top: 22px; text-align: center; }
+    </style>
+</head>
+<body>
+<main class="card">
+    <div class="brand">🛡 SafeScan AI</div>
+    <div class="label">ADMINISTRATOR ACCESS</div>
+    <h1>Admin Sign In</h1>
+    <p>Sign in with your authorized administrator account.</p>
+
+    <p class="error" th:if="${error}" th:text="${error}"></p>
+
+    <form th:action="@{/admin/login}" method="post">
+        <label for="email">Admin email</label>
+        <input id="email" name="email" type="email"
+               autocomplete="username" required>
+
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password"
+               autocomplete="current-password" required>
+
+        <button type="submit">Sign In to Admin Dashboard</button>
+    </form>
+
+    <a class="back" th:href="@{/login}">Back to User Sign In</a>
+</main>
+</body>
+</html>

@@ -118,7 +118,67 @@
             color: #b8c5dc;
             font-size: 13px;
         }
+        .auth-options {
+            display: grid;
+            gap: 0;
+            margin: 0 0 22px;
+            border: 1px solid rgba(0, 238, 255, 0.55);
+            border-radius: 12px;
+            overflow: hidden;
+        }
 
+        .auth-option {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            background: rgba(0, 216, 255, 0.04);
+            color: #eafcff;
+            transition: background 0.2s;
+        }
+
+        .auth-option + .auth-option {
+            border-top: 1px solid rgba(0, 238, 255, 0.35);
+        }
+
+        .auth-option:hover {
+            background: rgba(0, 216, 255, 0.12);
+            text-decoration: none;
+        }
+
+        .auth-option-icon {
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            border: 1px solid #13d9ed;
+            border-radius: 50%;
+            color: #52efff;
+            font-size: 20px;
+        }
+
+        .auth-option-text {
+            flex: 1;
+        }
+
+        .auth-option-title {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .auth-option-description {
+            display: block;
+            color: #a9bdd9;
+            font-size: 12px;
+        }
+
+        .auth-option-arrow {
+            color: #52efff;
+            font-size: 20px;
+        }
         a {
             color: #58eaf5;
             text-decoration: none;
@@ -521,7 +581,29 @@
         <p class="subtitle">
             Access your security dashboard and continue browsing safer.
         </p>
+            <div class="auth-options">
+        <a class="auth-option" th:href="@{/login}">
+            <span class="auth-option-icon" aria-hidden="true">♙</span>
+            <span class="auth-option-text">
+                <span class="auth-option-title">User Sign In</span>
+                <span class="auth-option-description">
+                    Access your account and scan for threats.
+                </span>
+            </span>
+            <span class="auth-option-arrow" aria-hidden="true">→</span>
+        </a>
 
+        <a class="auth-option" th:href="@{/admin/login}">
+            <span class="auth-option-icon" aria-hidden="true">⬡</span>
+            <span class="auth-option-text">
+                <span class="auth-option-title">Admin Sign In</span>
+                <span class="auth-option-description">
+                    For authorized administrators only.
+                </span>
+            </span>
+            <span class="auth-option-arrow" aria-hidden="true">→</span>
+        </a>
+    </div>
         <p class="signup-prompt">
             Don't have an account?
             <a th:href="@{/signup}">Create account</a>
